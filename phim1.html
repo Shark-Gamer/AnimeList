@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thám Tử Bác Sĩ Ameku Takao</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+<style>
+    /* Tổng quát */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header */
+header {
+    background-color: #333;
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+.logo {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+nav .menu {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.menu li {
+    display: inline;
+}
+
+.menu a {
+    text-decoration: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    background-color: #444;
+}
+
+.menu a:hover {
+    background-color: #666;
+}
+
+/* Chi tiết phim */
+.movie-detail {
+    margin: 2rem 0;
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.movie-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #222;
+}
+
+.thong-tin-phim {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 18px;
+}
+
+.movie-layout {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.movie-poster img {
+    width: 100%;
+    max-width: 300px;
+    border-radius: 10px;
+}
+
+.movie-info h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.movie-info ul {
+    list-style: none;
+    padding: 0;
+}
+
+.movie-info li {
+    margin-bottom: 0.5rem;
+}
+
+/* Khung chứa các nút Xem Phim và Tổng Quan */
+.movie-actions {
+    display: flex;
+    justify-content: center; /* Canh giữa các nút */
+    gap: 15rem; /* Giảm khoảng cách giữa các nút */
+    background-color: #007BFF;
+    padding: 0.8rem; /* Giảm padding để làm phần này nhỏ gọn hơn */
+    border-radius: 10px;
+    margin-top: 1rem;
+}
+
+.movie-actions button {
+    padding: 0.5rem 0.8rem; /* Giảm padding để nút nhỏ gọn hơn */
+    min-width: 120px; /* Đảm bảo chữ không xuống hàng */
+    border: 2px solid transparent; /* Thêm viền ban đầu để tránh thay đổi kích thước khi hover */
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    background-color: #007BFF;
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* Thêm hiệu ứng thay đổi màu và viền */
+    text-align: center; /* Canh giữa văn bản */
+    white-space: nowrap; /* Không cho phép xuống hàng */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem; /* Khoảng cách giữa icon và chữ */
+}
+
+.movie-actions button:hover {
+    background-color: #0056b3; /* Màu hover */
+    border-color: #0056b3; /* Viền thay đổi khi hover */
+}
+
+/* Thêm icon trước các nút */
+.movie-actions .btn-watch::before {
+    content: '\f26c'; /* Mã Unicode cho TV từ Font Awesome */
+    font-family: 'Font Awesome 6 Free'; /* Đảm bảo dùng Font Awesome */
+    font-weight: 900; /* Sử dụng font-weight 900 để hiển thị biểu tượng */
+    font-size: 20px; /* Kích thước biểu tượng TV */
+}
+
+.movie-actions .btn-overview::before {
+    content: '\2630'; /* Unicode cho dấu ba gạch ☰ */
+    font-size: 20px; /* Kích thước biểu tượng ba gạch */
+}
+
+/* Danh sách tập và kênh */
+.movie-episodes.hidden {
+    display: none;
+}
+
+.movie-episodes {
+    margin-top: 1rem;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+/* Kênh phát sóng */
+.channel {
+    margin-bottom: 2rem;
+}
+
+.channel-logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #ffffff;
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: 1px solid #838383;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.channel-logo {
+    width: 40px; /* Tăng kích thước logo */
+    height: 40px;
+    border-radius: 50%; /* Logo tròn hơn */
+    object-fit: cover;
+}
+
+.channel-name {
+    font-weight: bold;
+    color: #333;
+    font-size: 1rem; /* Tăng kích thước tên kênh */
+}
+
+/* Danh sách tập phim */
+.channel ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0; /* Tạo khoảng cách giữa logo và danh sách tập */
+}
+
+.channel ul li {
+    margin-bottom: 0.5rem;
+}
+
+.movie-episodes h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.movie-episodes ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.movie-episodes li {
+    margin-bottom: 0.5rem;
+}
+
+.episode-button {
+    display: block;
+    background-color: #007BFF;
+    color: white;
+    padding: 0.8rem 1.2rem; /* Điều chỉnh padding */
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    text-align: left;
+    transition: background-color 0.3s ease;
+}
+
+.episode-button:hover {
+    background-color: #0056b3;
+}
+
+/* Thêm khoảng cách giữa các kênh */
+.movie-episodes .channel:not(:last-child) {
+    margin-bottom: 1.5rem;
+}
+
+/* Tổng quan */
+.movie-overview.hidden {
+    display: none;
+}
+
+.movie-overview {
+    margin-top: 1rem;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.movie-overview h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.movie-overview ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.movie-overview li {
+    margin-bottom: 0.5rem;
+}
+
+.movie-overview strong {
+    color: #333;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+footer p {
+    margin: 0;
+}
+
+</style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="logo">Thông Tin Phim</h1>
+            <nav>
+                <ul class="menu">
+                    <li><a href="index.html">Trang chủ</a></li>
+                    <li><a href="#">Phim mới</a></li>
+                    <li><a href="#">Thể loại</a></li>
+                    <li><a href="#">Liên hệ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <article class="movie-detail">
+                <!-- Tiêu đề phim -->
+                <h1 class="movie-title">Thám Tử Bác Sĩ Ameku Takao</h1>        
+                <!-- Layout chính -->
+                <div class="movie-layout">
+                    <!-- Hình ảnh poster -->
+                    <div class="movie-poster">
+                        <img src="images/ameku-takao-n-suiri-karte.jpg" alt="Poster Thám Tử Bác Sĩ Ameku Takao">
+                    </div>
+                    <!-- Thông tin phim -->
+                    <div class="movie-info">
+                        <ul class="thong-tin-phim">
+                            <li>Bệnh viện Đa khoa Tenikai, Khoa Chẩn đoán Tổng hợp là nơi tiếp nhận những ca bệnh mà các khoa khác “bó tay”, cùng với đó là những vụ án mạng bí ẩn và những hiện tượng kỳ lạ vượt ngoài khả năng xử lý của cảnh sát.</li>
+                            <br>
+                            <li>Thiên tài y học Ameku Takao sẽ vén màn bí mật, đưa ra lời giải đáp cho những căn bệnh kỳ quái và hé lộ sự thật gây sốc ẩn giấu bên trong.</li>
+                            <br>
+                            <li>“Căn bệnh này, hãy để tôi chẩn đoán!”</li>
+                            <br>
+                            <li>Tập 1 và 2 là những tập phim hoàn toàn mới do chính tác giả Mikito Chinen chấp bút! Bí mật nào ẩn giấu đằng sau người đàn ông với dòng máu xanh, bị một con quái thú khổng lồ cắn mất chân?</li>
+                            <br>   
+                            <li>Đón xem “Thám tử bác sĩ Ameku Takao” để khám phá những bí ẩn y khoa ly kỳ cùng nữ bác sĩ tài ba Ameku Takao!</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Khung cho Xem Phim và Tổng Quan -->
+                <div class="movie-actions">
+                    <button class="btn-watch" onclick="toggleDisplay('episodes')">Xem</button>
+                    <button class="btn-overview" onclick="toggleDisplay('overview')">Tổng Quan</button>
+                </div>
+
+                <!-- Danh sách tập và kênh -->
+<div class="movie-episodes hidden" id="episodes">
+    <!-- Kênh Ani-one -->
+    <div class="channel">
+        <div class="channel-logo-container">
+            <img src="images/ani-one.jpg" alt="Logo Kênh Ani-one" class="channel-logo">
+            <span class="channel-name">Ani-one</span>
+        </div>
+        <ul>
+            <li><a href="https://ani-one.com/tap-1" class="episode-button" target="_blank">Tập 1: Bí Ẩn Đầu Tiên</a></li>
+            <li><a href="https://ani-one.com/tap-2" class="episode-button" target="_blank">Tập 2: Kẻ Thù Trong Bóng Tối</a></li>
+            <li><a href="https://ani-one.com/tap-3" class="episode-button" target="_blank">Tập 3: Sự Thật Được Phơi Bày</a></li>
+        </ul>
+    </div>
+
+    <!-- Kênh Muse Asia -->
+    <div class="channel">
+        <div class="channel-logo-container">
+            <img src="images/musevn.jpg" alt="Logo Kênh Muse Asia" class="channel-logo">
+            <span class="channel-name">Muse VN</span>
+        </div>
+        <ul>
+            <li><a href="https://muse-asia.com/tap-1" class="episode-button" target="_blank">Tập 1: Bí Ẩn Đầu Tiên</a></li>
+            <li><a href="https://muse-asia.com/tap-2" class="episode-button" target="_blank">Tập 2: Kẻ Thù Trong Bóng Tối</a></li>
+            <li><a href="https://muse-asia.com/tap-3" class="episode-button" target="_blank">Tập 3: Sự Thật Được Phơi Bày</a></li>
+        </ul>
+    </div>
+</div>
+
+                <!-- Nội dung tổng quan -->
+                <div class="movie-overview hidden" id="overview">
+                    <h2>Thông Tin Chi Tiết</h2>
+                    <ul>
+                        <li><strong>Ngày phát hành:</strong> 05/01/2025</li>
+                        <li><strong>Tên Romaji:</strong> Ameku Takao no Suiri Karte</li>
+                        <li><strong>Số tập:</strong> 12</li>
+                        <li><strong>Mùa chiếu:</strong> Đông 2025</li>
+                        <li><strong>Bản quyền:</strong> Đang cập nhật</li>
+                        <li><strong>Thể loại:</strong> Hành động, Kỳ bí</li>
+                        <li><strong>Thời lượng:</strong> 23 phút</li>
+                        <li><strong>Ngôn ngữ:</strong> Tiếng Nhật</li>
+                    </ul>
+                </div>
+            </article>
+        </div>
+    </main>
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Thông Tin Phim. Tất cả bản quyền được bảo lưu.</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleDisplay(section) {
+            // Ẩn cả hai phần
+            const episodes = document.getElementById('episodes');
+            const overview = document.getElementById('overview');
+
+            episodes.classList.add('hidden');
+            overview.classList.add('hidden');
+
+            // Hiển thị phần tương ứng
+            if (section === 'episodes') {
+                episodes.classList.remove('hidden');
+            } else if (section === 'overview') {
+                overview.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
